@@ -1,20 +1,51 @@
-Based on this random seed {{$json.seed}}, generate test data for functionality testing asking questions based on provided topics, {{ $json.topics }} and schema. Ensure to generate {{ $json.numberOfTestData }} results.
+As a test data generator, your task is to create diverse test datasets using the random seed {{$json.seed}} that strictly adhere to the user-provided topics: {{ $json.topics }}. Generate exactly {{ $json.numberOfTestData }} entries that conform to the Tone of Voice JSON schema.
 
-Task
+Output format must follow this schema:
+```json
+{
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "text": {
+        "type": "string",
+        "description": "The text to be transformed",
+        "minLength": 1
+      },
+      "persona": {
+        "type": "string",
+        "enum": ["learner", "earlycareeracademic", "midcareeracademic", "latercareeracademic", "librarian", "publishingpartner", "professional"]
+      },
+      "personality": {
+        "type": "array",
+        "items": { "type": "string" },
+        "maxItems": 4,
+        "uniqueItems": true
+      },
+      "outputType": {
+        "type": "string",
+        "enum": ["default", "email", "web", "blog", "tweet"]
+      }
+    },
+    "required": ["text", "persona", "outputType"]
+  }
+}
+```
 
-Create structured test data for each given topic that adheres to the input parameters schema, capturing the specific nature of data within each topic domain.
+Core requirements:
+1. Topic specificity: All generated text must directly relate to the exact topics provided ({{ $json.topics }}), containing domain-specific terminology and concepts unique to each topic.
 
-Requirements
+2. Text length variation: Deliberately distribute entries across these length categories:
+   - Short (25-50 chars): ~25% of entries
+   - Medium (100-250 chars): ~35% of entries 
+   - Long (400-800 chars): ~30% of entries
+   - Very long (1000+ chars): ~10% of entries
 
-Input Parameters Schema: Include all necessary fields, types, constraints, and relationships between parameters.
-Data Nature: For each topic, identify and incorporate the intrinsic characteristics and properties that define the nature of data in that domain.
+3. Schema adherence: Every entry must:
+   - Use only valid enum values for "persona" and "outputType"
+   - Include 0-4 unique personality traits when provided
+   - Always include the required fields (text, persona, outputType)
 
-Steps:
-1. Analyze the topics, {{ $json.topics }} to identify their specific data nature and generate key questions related to these topics.
-2. Define the appropriate data patterns, formats, and ranges that represent the natural structure of each topic domain.
-3. Use the input schema to generate valid test cases that reflect the authentic nature of each topic.
-4. Ensure coverage of edge cases and boundary values within the context of each topic's natural data constraints.
-5. Incorporate realistic variability in data to test robustness (e.g., random values within domain-specific constraints).
+4. Content diversity: Vary the complexity, contextual framing, and use cases within each topic while maintaining topic integrity.
 
-Output Format
-Format: JSON containing the input parameters only with data that authentically represents the natural characteristics of each specified topic domain.
+Create equal representation across all topics and ensure each generated entry contains clear topic-specific markers that would be impossible to find in other domains.
